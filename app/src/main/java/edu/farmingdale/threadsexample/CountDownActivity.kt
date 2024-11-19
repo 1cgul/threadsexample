@@ -1,7 +1,6 @@
 package edu.farmingdale.threadsexample
 
 import androidx.compose.runtime.Composable
-import edu.farmingdale.threadsexample.countdowntimer.CountDownActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,13 +32,13 @@ fun CountDownActivity() {
 
     //mediaPlayer for sound playback
     val mediaPlayer = remember {
-        MediaPlayer.create(context, Uri.parse("android.resource://edu.farmingdale.threadsexample/raw/timer.mp3"))
+        MediaPlayer.create(context, Uri.parse("android.resource://edu.farmingdale.threadsexample/raw/timer"))
     }
 
     //initialize the timer starting from 15
     var timer by remember { mutableStateOf(15) }
 
-    //use LaunchedEffect to handle the countdown
+    // use LaunchedEffect to handle the countdown
     LaunchedEffect(key1 = timer) {
         while (timer > 0) {
             delay(1000) // wait 1 second before next count
@@ -52,7 +51,7 @@ fun CountDownActivity() {
         }
     }
 
-    //displays the timer in the center of the screen
+    // displays the timer in the center of the screen
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -64,14 +63,14 @@ fun CountDownActivity() {
             Text(
                 text = timer.toString(),
                 fontSize = 120.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+                fontWeight = if (timer <= 10) FontWeight.Bold else FontWeight.Normal,
+                color = if (timer <= 10) Color.Red else Color.Black
             )
         }
 
         Button(
             onClick = {
-                timer = 10
+                timer = 15
             }
         ) {
             Text("Reset Timer")
@@ -87,5 +86,3 @@ fun CountDownActivity() {
         }
     }
 }
-// ToDo 8: During the last 10 seconds, make the text red and bold
-
