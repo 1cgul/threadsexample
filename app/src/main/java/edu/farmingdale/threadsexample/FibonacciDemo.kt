@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -26,6 +27,8 @@ import java.util.Locale
 fun FibonacciDemoNoBgThrd() {
     var answer by remember { mutableStateOf("") }
     var textInput by remember { mutableStateOf("40") }
+
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -44,8 +47,12 @@ fun FibonacciDemoNoBgThrd() {
             )
             Button(onClick = {
                 val num = textInput.toLongOrNull() ?: 0
-                val fibNumber = fibonacci(num)
-                answer = NumberFormat.getNumberInstance(Locale.US).format(fibNumber)
+                scope.launch {
+                    val fibNumber = withContext(Dispatchers.Default) {
+                        fibonacci(num)
+                    }
+                    answer = NumberFormat.getNumberInstance(Locale.US).format(fibNumber)
+                }
             }) {
                 Text("Fibonacci")
             }
@@ -58,10 +65,6 @@ fun FibonacciDemoNoBgThrd() {
 fun fibonacci(n: Long): Long {
     return if (n <= 1) n else fibonacci(n - 1) + fibonacci(n - 2)
 }
-
-
-// ToDo 2: Create a composable function called `FibonacciDemoWithCoroutine` that calculates the
-//  Fibonacci number of a given number using a coroutine.
 // ToDo 3: Start the application using the CountDownActivity
 // ToDo 4: Make the Text of the timer larger
 // ToDo 5: Show a visual indicator of the timer going down to 0
